@@ -8,6 +8,8 @@ from accounts.models import User, UserProfile
 def create_profile(sender, instance, created, **kwargs):
     if created:
         UserProfile.objects.create(user=instance)
+        print("Profile created first time")
+    # if updated the user
     else:
         try:
             profile = UserProfile.objects.get(user=instance)
