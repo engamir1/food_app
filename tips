@@ -7,3 +7,9 @@
 > python3 manage.py runserver
 
 > python manage.py createsuperuser
+
+** add multi edit lines in linux vscode 
+
+
+Press Crtl+Shift+P, search for "Toggle Multi-Cursor Modifier" and press Enter 
+click ctrl + left mouse in any lines 
