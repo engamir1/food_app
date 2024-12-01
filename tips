@@ -5,3 +5,5 @@
 > django-admin startproject main_app . 
 
 > python3 manage.py runserver
+
+> python manage.py createsuperuser
