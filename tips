@@ -13,3 +13,6 @@
 
 Press Crtl+Shift+P, search for "Toggle Multi-Cursor Modifier" and press Enter 
 click ctrl + left mouse in any lines 
+
+> pip install python-decouple  
+> make .env file 
