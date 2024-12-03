@@ -1,5 +1,5 @@
 #!/bin/sh
-'''exec' "/home/Amir/Dropbox/Apps/Web development/food_app/my_env/bin/python3" "$0" "$@"
+'''exec' "/home/Amir/Dropbox/Apps/Web development/food_app/myenv/bin/python3" "$0" "$@"
 ' '''
 # -*- coding: utf-8 -*-
 import re
