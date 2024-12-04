@@ -141,7 +141,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
-
+win_env/
 # Spyder project settings
 .spyderproject
 .spyproject
@@ -174,3 +174,7 @@ cython_debug/
 #.idea/
 
 # End of https://www.toptal.com/developers/gitignore/api/django
+
+# new add
+.vscode/
+temp/
