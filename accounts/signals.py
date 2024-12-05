@@ -6,8 +6,8 @@ from accounts.models import CustomUser, UserProfile
 
 @receiver(post_save, sender=CustomUser)
 def save_post_create_profile_receiver(sender, instance, created, **kwargs):
-    print(created)
-    print(instance)
+    # print(created)
+    # print(instance)
     if created:
         print("created")
         UserProfile.objects.create(user=instance)

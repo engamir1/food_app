@@ -57,9 +57,7 @@ class CustomUser(AbstractBaseUser):
     first_name = models.CharField(max_length=50)
     username = models.CharField(max_length=50,unique=True)
     email = models.EmailField(max_length=150, unique=True)
-    mobile_number = models.CharField(max_length=12, validators=[
-        RegexValidator(regex=r'^[0-9]{12}$', message="Phone number must be 12 digits.")
-    ])
+    mobile_number = models.CharField(max_length=12,  )
     national_id = models.CharField(max_length=12, validators=[
         RegexValidator(regex=r'^[0-9]{15}$', message="Nations ID must be 15 digits.")
     ])

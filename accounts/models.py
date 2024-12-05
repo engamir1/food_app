@@ -59,10 +59,10 @@ class CustomUserManager(BaseUserManager):
 class CustomUser(AbstractBaseUser):
 
     # choices
-    RESTURANT = 1
+    VENDOR = 1
     CUSTOMER = 2
     ROLE_CHOICES = (
-        (RESTURANT, "Resturant"),
+        (VENDOR, "Vendor"),
         (CUSTOMER, "Customer"),
     )
     # connect between cutome manager and custome user model

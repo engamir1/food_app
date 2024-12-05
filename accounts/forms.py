@@ -16,6 +16,6 @@ class CustomUserForm(forms.ModelForm):
             "role",
             "first_name",
             "last_name",
-            "mobile_number",
+            # "mobile_number",
             "password",
         ]
