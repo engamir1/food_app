@@ -10,6 +10,7 @@ class CustomUserForm(forms.ModelForm):
 
     class Meta:
         model = CustomUser
+        # these fields are rerquired
         fields = [
             "email",
             "username",

@@ -88,27 +88,30 @@
                   </ul>
                 </div>
               </div>
-              <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-                <div class="login-option">
-                  <a
-                    class="cs-color cs-popup-joinus-btn login-popup"
-                    data-toggle="modal"
-                    href="#"
-                    >Login /
-                  </a>
-
-                  <a
-                    class="cs-color cs-popup-joinus-btn login-popup"
-                    data-toggle="modal"
-                    href="{% url 'register_new_vendor' %}"
-                  >
-                    Register</a
-                  >
-                  <a class="get-start-btn" href="{% url 'register_new_user'%}">
-                    Register Restaurant
-                  </a>
-                </div>
-              </div>
+                {% if user.is_authenticated%}
+                      <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                        <div class="login-option">
+                        <a class="cs-color cs-popup-joinus-btn login-popup" href="{% url 'accounts:dashboard' %}">
+                          Dashboard</a>
+                        <a class="get-start-btn  " href="{% url 'accounts:logout'%}">
+                          Logout
+                        </a>
+                        </div>
+                        </div>
+                        {% else %}
+                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                          <div class="login-option">
+                            <a class="cs-color cs-popup-joinus-btn login-popup" data-toggle="modal" href="{% url 'accounts:login' %}">Login /
+                            </a>
+                            <a class="cs-color cs-popup-joinus-btn login-popup" data-toggle="modal"
+                              href="{% url 'accounts:register_new_vendor' %}">
+                              Register</a>
+                            <a class="get-start-btn" href="{% url 'accounts:register_new_user'%}">
+                              Register Restaurant
+                            </a>
+                          </div>
+                        </div>
+                {% endif%}
             </div>
           </div>
         </div>
