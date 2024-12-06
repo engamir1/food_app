@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import Http404, HttpResponse
 from django.shortcuts import redirect, render
 
 from accounts.forms import CustomUserForm
@@ -6,9 +6,9 @@ from django.contrib import messages, auth
 from django.contrib.auth.decorators import login_required
 
 from accounts.models import CustomUser, UserProfile
-from accounts.utils import anonymous_required, dectect_role
+from accounts.utils import anonymous_required
 from vendor.forms import VendorForm
-
+from django.core.exceptions import PermissionDenied
 
 # Create your views here.
 
@@ -17,7 +17,7 @@ from vendor.forms import VendorForm
 def register_user(request):
     if request.method == "POST":
         form = CustomUserForm(request.POST)
-        print(form.is_valid())
+        # print(form.is_valid())
 
         if form.is_valid():
             first_name = form.cleaned_data["first_name"]
@@ -40,9 +40,11 @@ def register_user(request):
             return redirect("accounts:register_new_user")
         # print(request.POST
         else:
-            print(form.errors)
+            pass
+            # print(form.errors)
     else:
-        print(request.method)
+        pass
+        # print(request.method)
 
         form = CustomUserForm()
     context = {"form": form}
@@ -81,10 +83,11 @@ def register_vendor(request):
             new_vendor.user = new_user
             new_vendor.user_profile = UserProfile.objects.get(user=new_user)
             new_vendor.save()
-            return redirect("accounts:register_new_user")
+            return redirect("accounts:login")
         else:
-            print(form.errors)
-            print(Vendor_form.errors)
+            pass
+            # print(form.errors)
+            # print(Vendor_form.errors)
     else:
         form = CustomUserForm()
         Vendor_form = VendorForm()
@@ -98,13 +101,25 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 
 
+# you should be anonymous to get login page
+@anonymous_required
 def login(request):
+
+    # if request.user.is_authenticated:
+    #     return redirect("accounts:dashboard")
 
     if request.method == "POST":
         email = request.POST.get("email")
         password = request.POST.get("password")
         user = auth.authenticate(email=email, password=password)
-        if user is not None:
+        # get user from db and get status of is_active form CustomUser model
+        temp_user = CustomUser.objects.get(email=email)
+        # check temp_user.is_active
+        print("the user is  ", temp_user.is_active)
+        if not temp_user.is_active:
+            print(temp_user)
+            return render(request, "accounts/waiting_activate.html")
+        elif user is not None and temp_user.is_active:
             auth.login(request, user)
             return redirect("accounts:dashboard")
     return render(request, "accounts/login.html")
@@ -115,13 +130,46 @@ def logout(request):
     return redirect("accounts:login")
 
 
+# if yournot logged in go to login page first
+@login_required(login_url="accounts:login")
 def dashboard(request):
-    return render(request, "accounts/dashboard.html")
+    redirectUrl = ""
+    user_type = request.user.role
+    # print(user_type, type(user_type))
+    if user_type == 1:
+        redirectUrl = "vendor_dashboard"
+        # return redirectUrl
+    if user_type == 2:
+        redirectUrl = "customer_dashboard"
+    else:
+
+        redirect("index")
+    # return redirectUrl
+    # else:
+    #     redirectUrl = "/admin"
+    #     return redirectUrl
+    # redirectUrl = "dashboard"
+    # user = request.user.role
+    # redirectUrl = dectect_role(user)
+    # print()
+    # return render(request, "accounts/dashboard.html")
+    return redirect(f"accounts:{redirectUrl}")
 
 
+@login_required(login_url="accounts:login")
 def customer_dashboard(request):
-    return render(request, "accounts/customer_dashboard.html")
+    # return render(request, "accounts/customer_dashboard.html")
+    user_role = request.user.role
+    if user_role == 2:
+        return render(request, "accounts/customer_dashboard.html")
+    else:
+        return render(request, "accounts/not_found.html")
 
 
+@login_required(login_url="accounts:login")
 def vendor_dashboard(request):
-    return render(request, "accounts/vendor_dashboard.html")
+    user_role = request.user.role
+    if user_role == 1:
+        return render(request, "accounts/vendor_dashboard.html")
+    else:
+        return render(request, "accounts/not_found.html")

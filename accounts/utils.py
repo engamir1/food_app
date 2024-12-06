@@ -19,6 +19,8 @@ def anonymous_required(view_func):
 def dectect_role(user):
     if user.role == 1:
         redirectUrl = "vendor_dashboard"
+        ""
+
         return redirectUrl
     if user.role == 2:
         redirectUrl = "customer_dashboard"

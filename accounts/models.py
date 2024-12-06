@@ -1,20 +1,12 @@
 from django.db import models
 
-# Create your models here.
-from django.db import models
-
 # import
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
 # this RegexValidator import for validate input before save to db
 from django.core.validators import RegexValidator
 
-# Create your models here.
-
-
 # create user manager class to create users
-
-
 class CustomUserManager(BaseUserManager):
     def create_user(self, username, first_name, password, last_name, email):
         if not email:
