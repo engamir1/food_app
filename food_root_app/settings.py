@@ -94,7 +94,17 @@ DATABASES = {
     }
 }
 
+# email sending for verifications
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "sandbox.smtp.mailtrap.io"
+EMAIL_HOST_USER = "8761f8eaa3d71d"
+EMAIL_HOST_PASSWORD = "ca2514dca51e4c"
+EMAIL_PORT = "2525"
 
+
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = False
+DEFAULT_FROM_EMAIL = "engmohamed.amir101@gmail.com"
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 

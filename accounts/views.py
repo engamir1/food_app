@@ -6,9 +6,11 @@ from django.contrib import messages, auth
 from django.contrib.auth.decorators import login_required
 
 from accounts.models import CustomUser, UserProfile
-from accounts.utils import anonymous_required
+from accounts.utils import anonymous_required, send_activation_email
 from vendor.forms import VendorForm
 from django.core.exceptions import PermissionDenied
+from django.utils.http import urlsafe_base64_decode
+from django.contrib.auth.tokens import default_token_generator
 
 # Create your views here.
 
@@ -35,7 +37,11 @@ def register_user(request):
             new_user.role = CustomUser.CUSTOMER
 
             new_user.save()
-            # form = CustomUserForm()
+            # send verifications
+            mail_subject = "Please activate your account"
+            email_template = "accounts/emails/account_verification_email.html"
+            send_activation_email(request, new_user, mail_subject, email_template)
+            messages.success(request, "Your account has been registered sucessfully!")
             messages.success(request, "تم التسجيل بنجاح ")
             return redirect("accounts:register_new_user")
         # print(request.POST
@@ -83,6 +89,11 @@ def register_vendor(request):
             new_vendor.user = new_user
             new_vendor.user_profile = UserProfile.objects.get(user=new_user)
             new_vendor.save()
+            mail_subject = "Please activate your account"
+            email_template = "accounts/emails/account_verification_email.html"
+            send_activation_email(request, new_vendor, mail_subject, email_template)
+            messages.success(request, "Your account has been registered sucessfully!")
+
             return redirect("accounts:login")
         else:
             pass
@@ -94,12 +105,6 @@ def register_vendor(request):
 
     context = {"form": form, "vendor_form": Vendor_form}
     return render(request, "accounts/register_vendor.html", context)
-
-
-# account section
-from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponse
-
 
 # you should be anonymous to get login page
 @anonymous_required
@@ -129,8 +134,8 @@ def logout(request):
     auth.logout(request)
     return redirect("accounts:login")
 
-
-# if yournot logged in go to login page first
+# if your not logged in go to login page first
+# if you create superuser without specify the role it will be wrong
 @login_required(login_url="accounts:login")
 def dashboard(request):
     redirectUrl = ""
@@ -138,21 +143,11 @@ def dashboard(request):
     # print(user_type, type(user_type))
     if user_type == 1:
         redirectUrl = "vendor_dashboard"
-        # return redirectUrl
     if user_type == 2:
         redirectUrl = "customer_dashboard"
-    else:
-
-        redirect("index")
-    # return redirectUrl
-    # else:
-    #     redirectUrl = "/admin"
-    #     return redirectUrl
-    # redirectUrl = "dashboard"
-    # user = request.user.role
-    # redirectUrl = dectect_role(user)
-    # print()
-    # return render(request, "accounts/dashboard.html")
+    elif user_type is None:
+        # you should specify the role of User fisrt
+        return HttpResponse("You didnt specify Role for User")
     return redirect(f"accounts:{redirectUrl}")
 
 
@@ -173,3 +168,35 @@ def vendor_dashboard(request):
         return render(request, "accounts/vendor_dashboard.html")
     else:
         return render(request, "accounts/not_found.html")
+
+
+def activate(request, uidb64, token):
+    # Activate the user by setting the is_active status to True
+    try:
+        uid = urlsafe_base64_decode(uidb64).decode()
+        user = CustomUser._default_manager.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, CustomUser.DoesNotExist):
+        user = None
+
+    if user is not None and default_token_generator.check_token(user, token):
+        user.is_active = True
+        user.save()
+        messages.success(request, "Congratulation! Your account is activated.")
+        return redirect("accounts:dashboard")
+    else:
+        messages.error(request, "Invalid activation link")
+        return redirect("accounts:dashboard")
+
+
+# forget password
+def forget_password(request):
+    return render(request, "accounts/forget_password.html")
+
+
+# password reset
+def reset_password(request):
+    pass
+
+
+def reset_password_token(request):
+    pass

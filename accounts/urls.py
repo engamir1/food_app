@@ -7,6 +7,10 @@ from .views import (
     register_vendor,
     customer_dashboard,
     vendor_dashboard,
+    activate,
+    forget_password,
+    reset_password,
+    reset_password_token,
 )
 
 
@@ -19,4 +23,15 @@ urlpatterns = [
     path("customer_dashboard/", view=customer_dashboard, name="customer_dashboard"),
     path("vendor_dashboard/", view=vendor_dashboard, name="vendor_dashboard"),
     path("dashboard/", view=dashboard, name="dashboard"),
+    # activate user
+    path("activate/<uidb64>/<token>", activate, name="activate"),
+    # password
+    path("forget_password/", forget_password, name="forget_password"),
+    path("reset_password/", reset_password, name="reset_password"),
+    # link that send token to users email
+    path(
+        "reset_password_token/<uidb64>/<token>/",
+        reset_password_token,
+        name="reset_password_token",
+    ),
 ]
